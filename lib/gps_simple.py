@@ -33,7 +33,7 @@
 #    receive_nmea_data(echo)
 
 # Helper functions: Converts NMEA lat/long string to decimal degrees
-def __nmea2deg(string, quadrant):      # e.g. 1234.5678
+def nmea2deg(string, quadrant):      # e.g. 1234.5678
     l_f = float(string)                # Convert the input string to a float
     l_i = int(l_f / 100)               # Get the degrees part
     l_d = (l_f - l_i * 100) / 60.0     # Convert the remainder to decimal degrees
@@ -130,11 +130,11 @@ class GPS_SIMPLE:
                 
                 # Latitude
                 if len(subframe[2]) > 0 and len(subframe[3]) > 0:
-                    self.__latitude = __nmea2deg(subframe[2], subframe[3])
+                    self.__latitude = nmea2deg(subframe[2], subframe[3])
                 
                 # Longitude
                 if len(subframe[4]) > 0 and len(subframe[5]) > 0:
-                    self.__longitude = __nmea2deg(subframe[4], subframe[5])
+                    self.__longitude = nmea2deg(subframe[4], subframe[5])
 
                 # Fix quality, higher is better
                 if len(subframe[6]) > 0:
@@ -169,11 +169,11 @@ class GPS_SIMPLE:
                  
                 # Latitude
                 if len(subframe[3]) > 0 and len(subframe[4]) > 0:
-                    self.__latitude = __nmea2deg(subframe[3], subframe[4])
+                    self.__latitude = nmea2deg(subframe[3], subframe[4])
                 
                 # Longitude
                 if len(subframe[5]) > 0 and len(subframe[6]) > 0:
-                    self.__longitude = __nmea2deg(subframe[5], subframe[6])                    
+                    self.__longitude = nmea2deg(subframe[5], subframe[6])                    
                     
                 # Speed, m/s
                 if len(subframe[7]) > 0:
