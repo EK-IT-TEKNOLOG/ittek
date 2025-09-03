@@ -8,7 +8,7 @@ print()
 
 #import gps_neopixel_test
 
-import educaboard
+#import educaboard
 '''
 from machine import Pin
 from time import sleep_ms
@@ -20,4 +20,5 @@ while True:
     sleep_ms(1)
     buzzer.off()
     sleep_ms(1)
+
 '''
