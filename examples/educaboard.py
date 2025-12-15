@@ -1,5 +1,5 @@
 # An Educaboard test program
-import math, random, sys, uselect
+import math, network, random, sys, uselect
 from time import sleep, sleep_ms, ticks_diff, ticks_ms
 from machine import ADC, I2C, Pin, PWM, SPI, UART
 from neopixel import NeoPixel
@@ -81,7 +81,7 @@ gps = GPS_SIMPLE(uart, False)          # GPS object creation
 gps_pps = Pin(pin_pps, Pin.IN)         # The PPS pin object
 
 # SPI BUS AND MCP23S08
-hspi = SPI(1, 10000000)                 # Create the SPI bus object running at 10 MHz
+hspi = SPI(1, 10000000)                # Create the SPI bus object running at 10 MHz
 portexp_addr = 0                       # The MSP23S08 subaddress, not a real SPI thing!
 portExp = PortExp_MCP23S08(hspi, pin_portexp_cs, portexp_addr)
 
@@ -140,6 +140,8 @@ prev_repb_val = False
 repb_pressed = False                   # Controlled by the port expander interrupt when RE PB pressed
 
 prev_buzzer_time = 0
+
+prev_temp_time = 0
 
 ########################################
 # FUNCTIONS
@@ -249,7 +251,7 @@ def portExp_interrupt(pin):
 
 # EEPROM check and write defaults values
 def eeprom_check_and_defaults():
-    # Check if there is valid communication withthe EEPROM
+    # Check if the communication with the EEPROM is valid
     try:
         eeprom_val = eeprom.read_byte(EEPROM_MAX_ADDRESS)
         random_val = random.randint(0, 0xFF)
@@ -282,24 +284,44 @@ def eeprom_check_and_defaults():
         return False
 
 
+# Wifi activation
+def wifi(name):
+    global lcd
+    lcd.move_to(19, 2)                 # Position on the LCD for Wifi status
+    
+    try:
+        ap = network.WLAN(network.AP_IF) # create access-point interface
+        ap.config(ssid = name)         # Set the SSID of the access point
+        ap.config(max_clients = 1)     # Set how many clients can connect to the network
+        ap.config(channel = 9)         # Set the Wifi channel
+        #ap.config(txpower = 2)         # Power levels [dBm]: 2, 5, 7, 8, 11, 13, 14, 15, 16, 18, 20 (default)
+        ap.active(True)                # Activate the interface
+        
+        print("\nWifi på 2,4 GHz aktiveret med SSID: " + name)
+        lcd.putstr('+')
+    except:
+        print("\nFejl ved aktivering af Wifi")
+        lcd.putstr('-')
+
 ########################################
 # PROGRAM
 print("Educaboard Testprogram")
 print("----------------------")
 print("Drej på R7 (blå over displayet) indtil der er synlig tekst i displayet,")
-print("og husk at JP5 bøjle/jumper skal sidde til højre og JP13 til venstre")
+print("og husk at JP5 bøjle/jumper skal sidde til højre og JP13 til venstre.")
 print()
 
 # Splash screen on the LCD
 lcd.putstr('* Educaboard ESP32 *')
-lcd.move_to(1, 1)
-lcd.putstr('KEA ITT www.kea.dk')
+lcd.move_to(0, 1)
+lcd.putstr('  EK ITEK www.ek.dk')
 lcd.move_to(0, 2)
 lcd.putstr('Indlejrede Systemer')
 lcd.move_to(0, 3)
 lcd.putstr('og Programmering   ')
 happy_face = bytearray([0x00, 0x0A, 0x00, 0x04, 0x00, 0x11, 0x0E, 0x00])
 lcd.custom_char(0, happy_face)
+lcd.move_to(17, 3)
 lcd.putchar(chr(0))
 for i in reversed(range(3)):
     lcd.move_to(19, 3)
@@ -310,13 +332,12 @@ lcd_contrast.freq(440)                      # Set PWM frequency on JP5
 lcd_contrast.duty(contrast_level)
 
 # Preformat LCD
-lcd.clear()                                 # Claer the splash screen
+lcd.clear()                                 # Clear the splash screen
 lcd.putstr("HH:MM:SS iv")
 lcd.move_to(0, 1)
 lcd.putstr("P:  0   T:    R:   0")
 lcd.move_to(0, 2)
-lcd.putstr("E:      B:")
-
+lcd.putstr("E:     B:        W:")
 
 # CONFIG PORT EXPANDER
 portExp.write_register(portExp.IODIR, 0x10) # Bulk setting of GP7:5, GP4 as input and GP3:0 as output, datasheet 1.6.1
@@ -329,8 +350,8 @@ portExp_interrupt_detect = Pin(pin_portexp_int, Pin.IN, Pin.PULL_UP)
 portExp_interrupt_detect.irq(trigger = Pin.IRQ_FALLING, handler = portExp_interrupt)
 
 
-# EEPROM check and wite default values
-lcd.move_to(3, 2)
+# EEPROM check and write default values
+lcd.move_to(2, 2)
 if (eeprom_check_and_defaults() == False):
     lcd.putstr("not")
 else:
@@ -340,11 +361,16 @@ else:
     eeprom_name_length = eeprom.read_byte(EEPROM_USER_NAME)    # The user name (handle), 20 + 1 bytes. post 0 = string length
     if (eeprom_name_length <= 20):
         user_name = eeprom.read_string(EEPROM_USER_NAME)
-        print("Hej %s, gå nu i gang med at teste dit Educaboard" % user_name)
+        print("Hej %s, gå nu i gang med at teste dit Educaboard.\nHvis du vil ændre navn så indtast et nyt, maks 20 tegn." % user_name)
         lcd.move_to(0, 3)
         lcd.putstr(user_name)
+        
+        wifi(user_name)
     else:
-        print("Indtast dit navn/kaldenavn på linien herunder, maks 20 bogstaver")
+        print("Indtast dit navn/kaldenavn på linien herunder, maks 20 tegn.")
+
+
+gps.clear_frames_received()            # Clear the frames received flag just in case of currupted frames during start
 
 
 while True:
@@ -416,7 +442,7 @@ while True:
     # Push buttons
     pb1_val = pb1.value()
     if (pb1_val != prev_pb1):
-        lcd.move_to(12, 2)
+        lcd.move_to(10, 2)
         if (pb1_val == 0):
             lcd.putchar("1")
         else:
@@ -425,7 +451,7 @@ while True:
         
     pb2_val = pb2.value()
     if (pb2_val != prev_pb2):
-        lcd.move_to(15, 2)
+        lcd.move_to(12, 2)
         if (pb2_val == 0):
             lcd.putchar("2")
         else:
@@ -447,7 +473,7 @@ while True:
             lcd.putstr("%3d" % re_counter)
 
     if (prev_repb_val != repb_pressed):  # RE PB
-        lcd.move_to(18, 2)
+        lcd.move_to(14, 2)
         if (repb_pressed == True):
             lcd.putstr("RE")
         else:
@@ -456,9 +482,12 @@ while True:
         
     
     # LMT87 temperature sensor
-    temp = temperature.get_temperature()
-    lcd.move_to(10, 1)
-    lcd.putstr("%3d" % temp)
+    if (ticks_diff(ticks_ms(), prev_temp_time) > 5000):  # Measure the tmperature every 5 s. ADC processing is slow so throttle back
+        temp = temperature.get_temperature()
+        lcd.move_to(10, 1)
+        lcd.putstr("%3d" % temp)
+        prev_temp_time = ticks_ms()
+    
     
     # SPI and port expander
     if (ticks_diff(ticks_ms(), prev_led23_toggle_time) > led23_on_off_time):
@@ -493,6 +522,8 @@ while True:
                 lcd.putchar(' ')
             
             print("Hej %s, gå nu i gang med at teste dit Educaboard" % user_name)
+            
+            wifi(user_name)            # Activate the Wifi
         else:
             print("Ugyldigt navn/kaldenavn, prøv igen")
 
@@ -513,4 +544,3 @@ while True:
 
 
     ctrlC()
-    
