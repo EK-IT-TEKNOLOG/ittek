@@ -1,4 +1,5 @@
 from machine import Pin, I2C, PWM
+from DIYables_MicroPython_LCD_I2C import LCD_I2C
 from time import sleep
 
 led1 = PWM(Pin(12, Pin.OUT), duty=0, freq=200)
@@ -17,6 +18,22 @@ uNom = 6.5
 
 # PROGRAM
 i2c = I2C(0)
+
+devicesIdentified = i2c.scan()
+
+deviceAddresses = [i for i in devicesIdentified if not i == 0x27]
+I2C_ADDR = 0x27
+
+# Define the number of rows and columns on your LCD
+LCD_ROWS = 4
+LCD_COLS = 20
+
+# Initialize LCD
+lcd = LCD_I2C(i2c, I2C_ADDR, LCD_ROWS, LCD_COLS)
+
+# Setup function
+lcd.backlight_on()
+lcd.clear()
 
 def get_adc_val(deviceAddress):
     # Measure and get the two bytes from the ADC
@@ -45,15 +62,36 @@ def get_adc_val(deviceAddress):
     
     return adcValue
 
+def error_func():
+    while True:
+        led1.duty(0)
+        sleep(0.3)
+        led1.duty(1024)
+        sleep(0.3)
+
+if not len(deviceAddresses) == 2:
+    print(f'[-] Der blev fundet {len(deviceAddresses)} devices. Der blev forventet at finde 2. {str(deviceAddresses)}')
+    lcd.clear()
+    lcd.set_cursor(0, 0)
+    lcd.print(f'[-] Der blev fundet {len(deviceAddresses)} devices. Der blev forventet at finde 2. {str(deviceAddresses)}')
+    error_func()
+
 while True:
+    lcd.clear()
+    lcd.set_cursor(0,0)
+    lcd.print('ADC Adapter Tester')
     for dev_addr in deviceAddresses:
         val = get_adc_val(dev_addr)
-        
-        if deviceAddresses.index(dev_addr) == 0:
+        idx = deviceAddresses.index(dev_addr)
+
+        if idx == 0:
+            lcd.set_cursor(idx+1,0)
             led1.duty(val)
         else:
+            lcd.set_cursor(idx+2,0)
             led2.duty(val)
-        
+        lcd.print(f'{dev_addr}: {val}')
+
         # Pause before next measurement
         sleep(.3)
         print()
