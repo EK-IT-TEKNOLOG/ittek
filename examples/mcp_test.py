@@ -20,7 +20,7 @@ uNom = 6.5
 i2c = I2C(0)
 
 devicesIdentified = i2c.scan()
-
+print(list(map(hex,devicesIdentified)))
 deviceAddresses = [i for i in devicesIdentified if not i == 0x27]
 I2C_ADDR = 0x27
 
@@ -34,6 +34,7 @@ lcd = LCD_I2C(i2c, I2C_ADDR, LCD_ROWS, LCD_COLS)
 # Setup function
 lcd.backlight_on()
 lcd.clear()
+lcd.print("HEJ")
 
 def get_adc_val(deviceAddress):
     # Measure and get the two bytes from the ADC
@@ -42,6 +43,8 @@ def get_adc_val(deviceAddress):
     # Put the bytes in UpperDataByte and LowerDataByte
     UpperDataByte = int(adcBytes[0])
     LowerDataByte = int(adcBytes[1])
+    
+    print(f"I2C Addr: {hex(deviceAddress)}")
     
     # Print the raw received bytes
     print("ADC Upper Data Byte: 0x%02X" % UpperDataByte)
@@ -85,14 +88,14 @@ while True:
         idx = deviceAddresses.index(dev_addr)
 
         if idx == 0:
-            lcd.set_cursor(idx+1,0)
+            lcd.set_cursor(0,idx+1)
             led1.duty(val)
         else:
-            lcd.set_cursor(idx+2,0)
+            lcd.set_cursor(0,idx+1)
             led2.duty(val)
-        lcd.print(f'{dev_addr}: {val}')
+        lcd.print(f'{hex(dev_addr)}: {val}')
 
         # Pause before next measurement
-        sleep(.3)
-        print()
+    sleep(.5)
+    print()
 
