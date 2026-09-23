@@ -49,7 +49,7 @@ wlan = do_connect()
 if wlan.isconnected():
     print('[+] Connected to WiFi', wlan.ifconfig())
     print('[+] Network test')
-    addr_info = socket.getaddrinfo('192.168.200.1', 8002) # Replace with your server's address and port
+    addr_info = socket.getaddrinfo('192.168.200.1', 8002)
     addr = addr_info[0][-1]
 
     s = socket.socket()
