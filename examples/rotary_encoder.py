@@ -1,5 +1,5 @@
 # A simple rotary encoder test program
-from RotaryEncoder import RotaryEncoder, CW, CCW
+from rotary_encoder import RotaryEncoder, CW, CCW
 
 ###########################################################
 # CONFIGURATION
