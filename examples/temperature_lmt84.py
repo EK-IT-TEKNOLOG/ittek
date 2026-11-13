@@ -39,5 +39,5 @@ while True:
 
     mV = adc2mV * adcVal
     temp = (mV - beta) / alpha
-    print("ADC: %3d -> %.1f °C" % (adcVal, temp))
+    print(f"ADC: {adcVal:3} -> {temp:,.1} °C")
     

@@ -114,16 +114,16 @@ def get_mac_addr_bstring(index):
 
 def print_mac_addr_list():
     for i in range(MAX_NUMBER_RECEIVERS):
-        print("Receiver MAC address %2d : " % i, end = "")
+        print(f"Receiver MAC address {i:2} : ", end = "")
         if mt.cast_type_ba(mac_addr_receiver[i]) != "Unicast":           
             print("** unallocated **")
         else:
             for j in range(6):             # Each entry takes six bytes
                 byte = mac_addr_receiver[i][j]
                 if j < 5:
-                    print("%02X:" % byte, end = "")
+                    print(f"{byte:02X}:", end = "")
                 else:
-                    print("%02X" % byte)   # Print the last byte without the trailing colon
+                    print(f"{byte:02X}")   # Print the last byte without the trailing colon
 
 
 def write_defaults():
@@ -145,17 +145,17 @@ def write_defaults():
 
 def print_configuration():
     res = sys.implementation
-    print("Name                    : %s" % str(res[0]))
+    print(f"Name                    : {str(res[0])}")
     major, minor, patch, dummy = res[1]
-    print("Version                 : %d.%d.%d" % (major, minor, patch))
-    print("Platform                : %s" % str(res[2]))
+    print(f"Version                 : {major}.{minor}.{patch}")
+    print(f"Platform                : {str(res[2])}")
     print()
-    print("User name               : %s" % user_name)
+    print(f"User name               : {user_name}")
     print()
-    print("Show broadcast messages : %d" % show_broadcast_messages)
-    print("Broadcast interval [s]  : %d" % broadcast_interval)
+    print(f"Show broadcast messages : {show_broadcast_messages}")
+    print(f"Broadcast interval [s]  : {broadcast_interval}")
     print()
-    print("Dashboard MAC address   : %s" % mt.bstr_to_str(misc.get_wifi_mac_address()))
+    print(f"Dashboard MAC address   : {mt.bstr_to_str(misc.get_wifi_mac_address())}")
     print_mac_addr_list()
     print()
 
@@ -234,7 +234,7 @@ def usb_scan_and_parse(cmd_echo = True):
         # Read the temperature, wr temp
         elif string == "rd temp":
             temp = misc.get_temperature()
-            print("%.1f" % temp)
+            print(f"{temp:,.1}")
 
         # Write the temperature calibration values, wr temp cal T1 A1 T2 A2
         elif string[0:12] == "wr temp cal ":
@@ -468,7 +468,7 @@ port_exp.gp_pullup(6, port_exp.ON)     # Enable pull-up on GP6, datasheet 1.6.7
 
 # Initialization done, now ready for use
 print_configuration()
-print("\nHi %s, time for some Smart Home fun?" % user_name)
+print(f"\nHi {user_name}, time for some Smart Home fun?")
 time.sleep(SPLASH_DELAY)
 lcd.preformat_screen()
 print("\nEnter   help   or   ?   for available commands\n")

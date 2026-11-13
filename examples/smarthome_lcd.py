@@ -81,42 +81,42 @@ def print_gps_data(year, month, day, hours, minutes, seconds, quality, sats, hdo
     # Line 0
     if prev_seconds != seconds:
         lcd.move_to(18, 0)
-        lcd.putstr("%02d" % seconds)
+        lcd.putstr(f"{seconds:02}")
         prev_seconds = seconds
     if prev_minutes != minutes:
         lcd.move_to(15, 0)
-        lcd.putstr("%02d" % minutes)
+        lcd.putstr(f"{minutes:02}")
         prev_minutes = minutes
     if prev_hours != hours:
         lcd.move_to(12, 0)
-        lcd.putstr("%02d" % hours)
+        lcd.putstr(f"{hours:02}")
         prev_hours = hours
 
     if prev_day != day:                
         lcd.move_to(0, 0)
-        lcd.putstr("%04d-%02d-%02d" % (year, month, day))
+        lcd.putstr(f"{year:04}-{month:02}-{day:02}")
         prev_day = day
 
     # Line 1
     if prev_quality != quality:                
         lcd.move_to(2, 1)
-        lcd.putstr("%1d" % quality)
+        lcd.putstr(f"{quality:1}")
         prev_quality = quality
 
     if prev_sats != sats:                
         lcd.move_to(6, 1)
-        lcd.putstr("%2d" % sats)
+        lcd.putstr(f"{sats:2}")
         prev_sats = sats
 
     if prev_hdop != hdop:                
         lcd.move_to(11, 1)
         if hdop > 9.9:
-            lcd.putstr("%3d" % round(hdop))
+            lcd.putstr(f"{round(hdop):3}")
         else:
-            lcd.putstr("%3.1f" % hdop)
+            lcd.putstr(f"{hdop:3.1}")
         prev_hdop = hdop
 
     if prev_temp != temp:                
         lcd.move_to(17, 1)
-        lcd.putstr("%3d" % round(temp))
+        lcd.putstr(f"{round(temp):3}")
         prev_temp = temp

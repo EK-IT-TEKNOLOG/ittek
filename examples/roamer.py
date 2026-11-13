@@ -84,33 +84,33 @@ while True:
     if (gps.receive_nmea_data()):
         if (old_day != gps.get_utc_day()):  # Only update if there is a new day. LCDs are slow so only write if necessary
             lcd.move_to(0, 0)
-            lcd.putstr("%04d-%02d-%02d" % (gps.get_utc_year(), gps.get_utc_month(), gps.get_utc_day()))
+            lcd.putstr(f"{gps.get_utc_year():04}-{gps.get_utc_month():02}-{gps.get_utc_day():02}")
             old_day = gps.get_utc_day()
         
         lcd.move_to(12, 0)
-        lcd.putstr("%02d:%02d:%02d" % (gps.get_utc_hours(), gps.get_utc_minutes(), gps.get_utc_seconds()))
+        lcd.putstr(f"{gps.get_utc_hours():02}:{gps.get_utc_minutes():02}:{gps.get_utc_seconds():02}")
 
         local_time = funkyFunctions.utc_to_local(gps.get_utc_year(), gps.get_utc_month(), gps.get_utc_day(), gps.get_utc_hours(), gps.get_utc_minutes(), gps.get_utc_seconds(), local_offset_hours, local_offset_minuts, daylight_saving)
         lcd.move_to(15, 1)
-        lcd.putstr("%02d:%02d" % (local_time[3], local_time[4]))
+        lcd.putstr(f"{local_time[3]:02}:{local_time[4]:02}")
 
         lcd.move_to(3, 1)
-        lcd.putstr("%9.4f" % gps.get_latitude())
+        lcd.putstr(f"{gps.get_latitude():9.4}")
         lcd.move_to(3, 2)
-        lcd.putstr("%9.4f" % gps.get_longitude())
+        lcd.putstr(f"{gps.get_longitude():9.4}")
 
         lcd.move_to(16, 2)
-        lcd.putstr("%4d" % round(gps.get_altitude()))
+        lcd.putstr(f"{round(gps.get_altitude()):4}")
 
         lcd.move_to(2, 3)
-        lcd.putstr("%d" % gps.get_fix_quality())
+        lcd.putstr(f"{gps.get_fix_quality()}")
         lcd.move_to(6, 3)
-        lcd.putstr("%2d" % gps.get_satellites())
+        lcd.putstr(f"{gps.get_satellites():2}")
         lcd.move_to(11, 3)
         if (gps.get_hdop() > 9.9):
-            lcd.putstr("%3d" % round(gps.get_hdop()))
+            lcd.putstr(f"{round(gps.get_hdop()):3}")
         else:
-            lcd.putstr("%3.1f" % gps.get_hdop())
+            lcd.putstr(f"{gps.get_hdop():3.1}")
     else:
         adcVal = 0
         
@@ -120,7 +120,7 @@ while True:
 
         temp = (adc2mV *  adcVal - beta) / alpha
         lcd.move_to(17, 3)
-        lcd.putstr("%3d" % round(temp))
+        lcd.putstr(f"{round(temp):3}")
         
         
     ctrlC()

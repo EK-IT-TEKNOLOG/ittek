@@ -47,21 +47,21 @@ def get_adc_val(deviceAddress):
     print(f"I2C Addr: {hex(deviceAddress)}")
     
     # Print the raw received bytes
-    print("ADC Upper Data Byte: 0x%02X" % UpperDataByte)
-    print("ADC Lower Data Byte: 0x%02X" % LowerDataByte)
+    print(f"ADC Upper Data Byte: 0x{UpperDataByte:02X}")
+    print(f"ADC Lower Data Byte: 0x{LowerDataByte:02X}")
     
     # Step B1, merge UpperDataByte with LowerDataByte
     combinedBytes = (UpperDataByte << 8) + LowerDataByte
-    print("combinedBytes D9-D0: 0x%04X" % combinedBytes)
+    print(f"combinedBytes D9-D0: 0x{combinedBytes:04X}")
     
     # Step B2, right justify the combined bytes
     adcValue = combinedBytes >> 2
-    print("adcValue, hex      : 0x%04X" % adcValue)
-    print("adcValue, dec      : %d" % adcValue)
+    print(f"adcValue, hex      : 0x%04X" % adcValue)
+    print(f"adcValue, dec      : %d" % adcValue)
     
     # Calculate the voltage
     voltage = adcValue * uNom / 1023.0
-    print("Voltage            : %.2f V" % voltage)
+    print(f"Voltage            : {voltage:,.2} V")
     
     return adcValue
 

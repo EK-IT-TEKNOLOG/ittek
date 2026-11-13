@@ -52,8 +52,8 @@ while True:
     cur_avg = cur_sum / measurements
     
     # Print the data (ought to be to a file instead)
-    print("%d%s%d%s%f%s%f" % (measurements, delimiter, timestamp, delimiter, bus_voltage, delimiter, current))
+    print(f"{measurements}{delimiter}{timestamp}{delimiter}{bus_voltage}{delimiter}{current}")
     
-    print("\t\t\t\t\t\t%.2f %.2f %.2f" % (cur_min, cur_max, cur_avg))
+    print(f"\t\t\t\t\t\t{cur_min:,.2} {cur_max:,.2} {cur_avg:,.2}")
     
     sleep(0.2)                         # Should not be present. Measure as fast as possible

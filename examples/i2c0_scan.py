@@ -16,7 +16,7 @@ while True:
         print("Looks like the I2C bus pull-up resistors are missing")
     else:
         for i in range(devicesCount):
-            print("Device found at address: 0x{devicesIdentified[i]:02x}")
+            print(f"Device found at address: 0x{devicesIdentified[i]:02x}")
     
     print()                            # Blank line before next scan
 

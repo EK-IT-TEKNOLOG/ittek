@@ -60,4 +60,4 @@ def set_temp_calibration(temp1, adc1, temp2, adc2):
     alpha = (temp2 - temp1) / (adc2 - adc1)
     beta = temp2 - alpha * adc2        # or beta = temp1 - alpha * adc1
     
-    print("LMT84: alpha: %f, beta: %f" % (alpha, beta))
+    print(f"LMT84: alpha: {alpha}, beta: {beta}")

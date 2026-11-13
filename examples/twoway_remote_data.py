@@ -83,7 +83,7 @@ def calibrate_battery_scaling():
         adc_val += bat_adc.read()      
     bat_scaling = 4.2 / (adc_val >> 6) # >> is fast divide by 2^6 = 64
     
-    print("Battery scaling is: %f" % bat_scaling)
+    print(f"Battery scaling is: {bat_scaling}")
 
 #########################################################################
 # PROGRAM

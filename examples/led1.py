@@ -9,7 +9,7 @@ mode = "DIGITAL"                       # Mode: "ANALOG", "DIGITAL", "PWM"
 
 ###########################################################
 # PROGRAM
-print("LED1 test program, %s\n" % mode)
+print(f"LED1 test program, {mode}\n")
 
 if mode == "ANALOG":
     led1_analog = DAC(Pin(pin_led1))   # Create DAC object for the pin

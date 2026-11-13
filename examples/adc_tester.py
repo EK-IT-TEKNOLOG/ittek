@@ -29,7 +29,7 @@ adc = ADC_substitute(25)
 while True:
     a = adc.read_adc()
     v = adc.read_voltage()
-    print("ADC: %4d, %.4f V" % (a, v))
+    print("ADC: {a:4}, {v:,.2} V" % (a, v))
 
 #     v = 0.000838616 * a + 0.079035
 #     print("ADC: %4d, %.4f V" % (a, v))

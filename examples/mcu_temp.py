@@ -8,6 +8,6 @@ while True:
     temp_farenheit = esp32.raw_temperature()
     temp_celcius = (temp_farenheit - 32) * 5 / 9
     
-    print("MCU temp: %.f °C" % temp_celcius)
+    print(f"MCU temp: {temp_celcius} °C")
     
     sleep(0.5)
