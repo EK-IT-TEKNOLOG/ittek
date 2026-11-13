@@ -32,7 +32,7 @@ class RotaryEncoder:
             return 0
 
 
-    def re_full_step():
+    def re_full_step(self):
         encTableFullStep = [
             [0x00, 0x02, 0x04, 0x00],
             [0x03, 0x00, 0x01, 0x10],
