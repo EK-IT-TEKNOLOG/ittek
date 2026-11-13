@@ -3,7 +3,7 @@ import sys
 res = sys.implementation
 print("Installed package")
 print("-----------------")
-print("Name    : %s" % str(res[0]))
+print(f"Name    : {res[0]}")
 major, minor, patch, dummy = res[1]
-print("Version : %d.%d.%d" % (major, minor, patch))
-print("Platform: %s" % str(res[2]))
+print(f"Version : {major}.{minor}.{patch}")
+print(f"Platform: {res[2]}")
