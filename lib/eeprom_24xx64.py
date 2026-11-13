@@ -217,7 +217,7 @@ class EEPROM_24xx64():
         
         # Read and print
         for i in range (int(count / 16)):
-            print("%04X: " % (start_addr + i * 16), end = '')  # Print hex index
+            print(f"{(start_addr + i * 16):04X}: ", end = '')  # Print hex index
             
             ba = bytearray(16)
             ba = self.i2c_bus.readfrom_mem(self.i2c_address, start_addr + i * 16, 16, addrsize = self.I2C_ADDRESS_SIZE)        # Read the data
@@ -226,7 +226,7 @@ class EEPROM_24xx64():
             for j in range (16):
                 if j == 8:
                     print(" ", end = '')
-                print("%02X " % (ba[j]), end = '')
+                print(f"{ba[j]:02X} ", end = '')
 
             print("| ", end = '')
 
@@ -237,7 +237,7 @@ class EEPROM_24xx64():
                 if ((ba[j] < 32) or (ba[j] > 126)):  # Handle the non-printable characters
                     print(". ", end = '')
                 else:
-                    print("%c " % (ba[j]), end = '')
+                    print(f"{chr(ba[j])} ", end = '')
             
             print()
             
